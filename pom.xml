@@ -56,6 +56,19 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>orchid</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.silvertunnel-ng</groupId>
+            <artifactId>netlib</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+
+
+
         <!--TEST-->
         <dependency>
             <groupId>junit</groupId>
