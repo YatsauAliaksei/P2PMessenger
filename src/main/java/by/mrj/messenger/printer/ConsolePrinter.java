@@ -1,6 +1,6 @@
 package by.mrj.messenger.printer;
 
-import by.mrj.messaging.network.Message;
+import by.mrj.message.domain.Message;
 import by.mrj.messenger.domain.TextMessage;
 
 import org.springframework.stereotype.Component;

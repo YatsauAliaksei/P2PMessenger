@@ -1,7 +1,7 @@
 package by.mrj.messenger.domain;
 
 import by.mrj.crypto.util.CryptoUtils;
-import by.mrj.messaging.network.domain.Hashable;
+import by.mrj.message.domain.Hashable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

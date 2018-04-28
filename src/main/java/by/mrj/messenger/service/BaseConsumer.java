@@ -1,9 +1,10 @@
 package by.mrj.messenger.service;
 
-import by.mrj.messaging.network.Message;
+import by.mrj.message.domain.Message;
+import by.mrj.message.util.MessageUtils;
 import by.mrj.messaging.network.MsgService;
 import by.mrj.messaging.network.NetworkService;
-import by.mrj.messaging.network.types.Command;
+import by.mrj.message.types.Command;
 import by.mrj.messenger.domain.TextMessage;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Log4j2
+// fixme: not good idea to use common Consumer interface in that case. Idea doesn't show usages properly.
 public class BaseConsumer implements Consumer<String> {
 
     private final NetworkService networkService;
@@ -30,7 +32,7 @@ public class BaseConsumer implements Consumer<String> {
     public void accept(String s) {
         CompletableFuture.runAsync(() -> {
             TextMessage payload = TextMessage.builder().text(s).timestamp(Instant.now()).build();
-            Message<TextMessage> message = MsgService.makeMessageWithSig(payload, Command.HANDSHAKE);
+            Message<TextMessage> message = MessageUtils.makeMessageWithSig(payload, Command.HANDSHAKE);
             msgService.sendMessage(message);
         }).handle((aVoid, throwable) -> {
             if (throwable != null) {

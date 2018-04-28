@@ -1,7 +1,7 @@
 package by.mrj.messenger;
 
 
-import by.mrj.messaging.network.DiscoveryService;
+import by.mrj.messaging.network.discovery.ZooKeeperDiscoveryService;
 import by.mrj.messaging.network.transport.SimpleSocketTransport;
 import by.mrj.messaging.network.transport.Transport;
 import lombok.extern.log4j.Log4j2;
@@ -18,13 +18,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 
 @PropertySource("classpath:default.properties")
-@ComponentScan(value = "by.mrj.messenger")//, useDefaultFilters = false)
+@ComponentScan(value = "by.mrj.messenger")
 @EnableAutoConfiguration
 @Log4j2
 public class MessengerConfig {
 
-    @Value("${app.listener.port}")
-    private int port;
     @Value("${discovery.service.connection.address}")
     private String connection;
     @Value("${app.root.node.name}")
@@ -40,19 +38,20 @@ public class MessengerConfig {
     }
 
     @Bean
-    public DiscoveryService discoveryService() {
+    public ZooKeeperDiscoveryService discoveryService() {
         Transport transport = transport();
-        return new DiscoveryService(connection, appName, transport.netAddress());
+        return new ZooKeeperDiscoveryService(connection, appName, transport.netAddress());
     }
 
     @Bean
     public Transport transport() {
-        return new SimpleSocketTransport(appNetAddress, port);
+        return new SimpleSocketTransport(appNetAddress);
 //        TorTransport torTransport = new TorTransport();
 //        torTransport.init();
 //        return torTransport;
     }
 
+    // fixme: should be removed. Cline should do it by it's own.
     @Bean
     @ConditionalOnProperty(value = "tor.proxy.enabled", havingValue = "true")
     public Boolean torProxyEnabled() {

@@ -1,11 +1,11 @@
 package by.mrj.messenger.service;
 
-import by.mrj.messaging.network.Message;
+import by.mrj.message.domain.Acknowledge;
+import by.mrj.message.domain.Message;
+import by.mrj.message.types.Command;
+import by.mrj.message.types.ResponseStatus;
+import by.mrj.message.util.MessageUtils;
 import by.mrj.messaging.network.MessageProcessor;
-import by.mrj.messaging.network.MsgService;
-import by.mrj.messaging.network.domain.Acknowledge;
-import by.mrj.messaging.network.types.Command;
-import by.mrj.messaging.network.types.ResponseStatus;
 import by.mrj.messenger.domain.TextMessage;
 import by.mrj.messenger.printer.Printer;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class MessengerMessageProcessor implements MessageProcessor {
         if (!isAcceptable(payload))
             return null;
 
-        if (!MsgService.verifyMessage(message)) {
+        if (!MessageUtils.verifyMessage(message)) {
             log.error("Message check failed.");
             return null;
         }
@@ -45,7 +45,7 @@ public class MessengerMessageProcessor implements MessageProcessor {
                 .correlationId(message.getChecksum())
                 .build();
 
-        return MsgService.makeMessageWithSig(ack, Command.ACKNOWLEDGE);
+        return MessageUtils.makeMessageWithSig(ack, Command.ACKNOWLEDGE);
     }
 
     private boolean isAcceptable(Object payload) {
