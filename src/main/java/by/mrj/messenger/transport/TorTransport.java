@@ -28,6 +28,7 @@ public class TorTransport implements Transport {
     private String netAddress;
     private int port;
 
+    // TODO: so far doesn't work as expected. SilverTunnel lib shows very unstable results. Same with Orchid.
     public void init() { // basic implementation.
         CompletableFuture.runAsync(() -> {
             System.setProperty(TorConfig.SYSTEMPROPERTY_TOR_MINIMUM_ROUTE_LENGTH, "2");

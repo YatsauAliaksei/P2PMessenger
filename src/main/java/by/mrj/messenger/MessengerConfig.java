@@ -1,7 +1,8 @@
 package by.mrj.messenger;
 
 
-import by.mrj.messaging.network.discovery.ZooKeeperDiscoveryService;
+import by.mrj.messaging.network.discovery.DiscoveryService;
+import by.mrj.messaging.network.discovery.DnsDiscovery;
 import by.mrj.messaging.network.transport.SimpleSocketTransport;
 import by.mrj.messaging.network.transport.Transport;
 import lombok.extern.log4j.Log4j2;
@@ -23,12 +24,12 @@ import org.springframework.context.annotation.PropertySource;
 @Log4j2
 public class MessengerConfig {
 
-    @Value("${discovery.service.connection.address}")
-    private String connection;
-    @Value("${app.root.node.name}")
-    private String appName;
+    @Value("${dns.address}")
+    private String dnsAddress;
     @Value("${app.net.address}")
     private String appNetAddress;
+    @Value("${app.root.node.name}")
+    private String appName;
     @Autowired(required = false)
     private Boolean torProxyEnabled;
 
@@ -38,29 +39,21 @@ public class MessengerConfig {
     }
 
     @Bean
-    public ZooKeeperDiscoveryService discoveryService() {
-        Transport transport = transport();
-        return new ZooKeeperDiscoveryService(connection, appName, transport.netAddress());
+    public DiscoveryService discoveryService(Transport transport) {
+        return new DnsDiscovery(transport, dnsAddress, appNetAddress);
     }
 
     @Bean
     public Transport transport() {
         return new SimpleSocketTransport(appNetAddress);
-//        TorTransport torTransport = new TorTransport();
-//        torTransport.init();
-//        return torTransport;
     }
 
-    // fixme: should be removed. Cline should do it by it's own.
+    // fixme: should be removed. Client should do it by it's own.
     @Bean
     @ConditionalOnProperty(value = "tor.proxy.enabled", havingValue = "true")
     public Boolean torProxyEnabled() {
         System.setProperty("socksProxyHost", "127.0.0.1");
         System.setProperty("socksProxyPort", "9050");
-        System.setProperty("http.proxyHost", "127.0.0.1");
-        System.setProperty("http.proxyPort", "9050");
-        System.setProperty("https.proxyHost", "127.0.0.1");
-        System.setProperty("https.proxyPort", "9050");
         return true;
     }
 
