@@ -33,7 +33,7 @@ public class BaseConsumer implements Consumer<String> {
         CompletableFuture.runAsync(() -> {
             TextMessage payload = TextMessage.builder().text(s).timestamp(Instant.now()).build();
             Message<TextMessage> message = MessageUtils.makeMessageWithSig(payload, Command.HANDSHAKE);
-            msgService.sendMessage(message);
+            msgService.sendMessageToNetwork(message);
         }).handle((aVoid, throwable) -> {
             if (throwable != null) {
                 log.error("Error occurred while sending message", throwable);
